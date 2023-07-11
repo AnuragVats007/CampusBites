@@ -1,0 +1,27 @@
+see how to use react-toastify and react-hot-toast
+
+context api are used instead of redux...
+both are important...
+
+give suitable title in every layout
+line 92 update product me prompt hai use yes/no asking button me convert karna hai.
+
+spinner can be user in loading more option on HomePage in frontend
+
+correct the basic sentence framing things...
+And use appropriate desciption and all other things...
+
+apply the hosting of images on other site...
+
+Here we can access cart without logging in just for adding items. But we need to change that functionality...
+
+A product is added multiple times instead incease its count...
+
+in cartPage handle only users can place orders...
+
+
+
+// Braintree and paypal for payment - forgamesonly981@gmail.com
+// Cyclic for deployment - lit2020007@iiitl.ac.in
+// Mongo Atlas for database - lit2020007@gmail.com
+// Netlify for deployment - lit2020007@gmail.com
