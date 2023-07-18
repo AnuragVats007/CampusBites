@@ -8,6 +8,8 @@ import {
   getOrdersController,
   getAllOrdersController,
   orderStatusController,
+  addItemToCart,
+  deleteFromCart,
 } from "../controllers/authController.js";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 //router object...
@@ -17,6 +19,13 @@ const router = express.Router();
 // REGISTER || METHOD POST
 router.post("/register", registerController);
 router.post("/login", loginController);
+
+// add to cart...
+router.post("/addtocart", requireSignIn, addItemToCart);
+
+// delete from cart
+router.post("/deletefromcart", requireSignIn, deleteFromCart);
+
 // Forgot password...
 router.post("/forgot-password", forogotPasswordController);
 

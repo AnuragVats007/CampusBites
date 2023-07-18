@@ -1,12 +1,12 @@
 import userModel from "../models/userModel.js";
-import orderModel from "../models/orderModel.js"; 
+import orderModel from "../models/orderModel.js";
 import { hashPassword, comparePassword } from "../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
 
 const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address, answer } = req.body;
-    const cart = []
+    const cart = [];
     // validations...
     if (!name) {
       return res.send({ message: "Name is required." });
@@ -102,6 +102,7 @@ const loginController = async (req, res) => {
         phone: user.phone,
         address: user.address,
         role: user.role,
+        cart: user.cart,
       },
       token,
     });
@@ -110,6 +111,56 @@ const loginController = async (req, res) => {
     res.status(500).send({
       success: false,
       message: "Error in login",
+      error,
+    });
+  }
+};
+
+// update cart
+const addItemToCart = async (req, res) => {
+  try {
+    const { email, product } = req.body;
+    const user = await userModel.findOne({ email });
+    if (user) {
+      const cart = user.cart;
+      cart.push(product);
+      await userModel.findByIdAndUpdate(user._id, { cart: cart });
+      res.status(200).send({
+        success: true,
+        message: "Cart updated successfully...",
+        user,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong...",
+      error,
+    });
+  }
+};
+
+// deleteFromCart
+const deleteFromCart = async (req, res) => {
+  try {
+    const { email, productId } = req.body;
+    const user = await userModel.findOne({ email });
+    if (user) {
+      const cart = user.cart;
+      console.log(cart);
+      const cart2 = cart.filter((item) => {return item._id!=productId});
+      console.log(cart2);
+      await userModel.findByIdAndUpdate(user._id, { cart: cart2 });
+      res.status(200).send({
+        success: true,
+        message: "Item deleted from cart successfully...",
+        user,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong...",
       error,
     });
   }
@@ -253,10 +304,12 @@ const orderStatusController = async (req, res) => {
 export {
   registerController,
   loginController,
+  addItemToCart,
+  deleteFromCart,
   testController,
   forogotPasswordController,
   updateProfileController,
   getAllOrdersController,
   getOrdersController,
-  orderStatusController
+  orderStatusController,
 };
