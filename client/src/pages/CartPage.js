@@ -71,6 +71,7 @@ const CartPage = () => {
         cart,
       });
       setLoading(false);
+      await axios.post(`${process.env.REACT_APP_API}/api/auth/deletefullcart`, {email: auth.user.email})
       localStorage.removeItem("cart");
       setCart([]);
       // console.log(auth);

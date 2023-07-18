@@ -117,7 +117,7 @@ const loginController = async (req, res) => {
 };
 
 // update cart
-const addItemToCart = async (req, res) => {
+const addItemToCartController = async (req, res) => {
   try {
     const { email, product } = req.body;
     const user = await userModel.findOne({ email });
@@ -140,8 +140,8 @@ const addItemToCart = async (req, res) => {
   }
 };
 
-// deleteFromCart
-const deleteFromCart = async (req, res) => {
+// deleteFromCart one item
+const deleteFromCartController = async (req, res) => {
   try {
     const { email, productId } = req.body;
     const user = await userModel.findOne({ email });
@@ -166,6 +166,28 @@ const deleteFromCart = async (req, res) => {
     });
   }
 };
+
+// delete whole cart
+const emptyCartController = async (req,res) => {
+  try {
+    const { email } = req.body;
+    const user = await userModel.findOne({email});
+    if(user){
+      await userModel.findByIdAndUpdate(user._id, { cart: [] });
+      res.status(200).send({
+        success: true,
+        message: "Item deleted from cart successfully...",
+        user,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong...",
+      error,
+    });
+  }
+}
 
 // forgot password
 const forogotPasswordController = async (req, res) => {
@@ -305,8 +327,9 @@ const orderStatusController = async (req, res) => {
 export {
   registerController,
   loginController,
-  addItemToCart,
-  deleteFromCart,
+  addItemToCartController,
+  deleteFromCartController,
+  emptyCartController,
   testController,
   forogotPasswordController,
   updateProfileController,

@@ -8,8 +8,9 @@ import {
   getOrdersController,
   getAllOrdersController,
   orderStatusController,
-  addItemToCart,
-  deleteFromCart,
+  deleteFromCartController,
+  addItemToCartController,
+  emptyCartController,
 } from "../controllers/authController.js";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 //router object...
@@ -21,10 +22,13 @@ router.post("/register", registerController);
 router.post("/login", loginController);
 
 // add to cart...
-router.post("/addtocart", requireSignIn, addItemToCart);
+router.post("/addtocart", requireSignIn, addItemToCartController);
 
 // delete from cart
-router.post("/deletefromcart", requireSignIn, deleteFromCart);
+router.post("/deletefromcart", requireSignIn, deleteFromCartController);
+
+//delete whole cart
+router.post("/deletefullcart", requireSignIn, emptyCartController);
 
 // Forgot password...
 router.post("/forgot-password", forogotPasswordController);
