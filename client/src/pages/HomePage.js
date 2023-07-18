@@ -8,11 +8,13 @@ import toast from "react-hot-toast";
 import Layout from "../components/Layout/Layout";
 import { AiOutlineReload } from "react-icons/ai";
 import "../styles/Homepage.css";
+import { useAuth } from "../context/auth";
 
 
 const HomePage = () => {
   const navigate = useNavigate();
   const [cart, setCart] = useCart();
+  const [auth, setAuth] = useAuth();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -185,7 +187,11 @@ const HomePage = () => {
                     </button>
                     <button
                       className="btn btn-dark ms-1"
-                      onClick={() => {
+                      onClick={async () => {
+                        const { data } = await axios.post(`${process.env.REACT_APP_API}/api/auth/addtocart`, {
+                          email : auth.user.email,
+                          product: p,
+                        });
                         setCart([...cart, p]);
                         localStorage.setItem(
                           "cart",

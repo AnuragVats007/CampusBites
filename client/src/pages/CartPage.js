@@ -32,8 +32,12 @@ const CartPage = () => {
     }
   };
   //detele item
-  const removeCartItem = (pid) => {
+  const removeCartItem = async (pid) => {
     try {
+      const res = await axios.post(`${process.env.REACT_APP_API}/api/auth/deletefromcart`, {
+        email : auth.user.email,
+        productId: pid,
+      });
       let myCart = [...cart];
       let index = myCart.findIndex((item) => item._id === pid); 
       myCart.splice(index, 1);
