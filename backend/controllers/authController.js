@@ -148,9 +148,10 @@ const deleteFromCart = async (req, res) => {
     if (user) {
       const cart = user.cart;
       console.log(cart);
-      const cart2 = cart.filter((item) => {return item._id!=productId});
-      console.log(cart2);
-      await userModel.findByIdAndUpdate(user._id, { cart: cart2 });
+      let index = -1, cnt = -1;
+      cart.forEach((item) => {cnt+=1; if(item===productId) {index = cnt}});
+      cart.splice(index, 1);
+      await userModel.findByIdAndUpdate(user._id, { cart: cart });
       res.status(200).send({
         success: true,
         message: "Item deleted from cart successfully...",
