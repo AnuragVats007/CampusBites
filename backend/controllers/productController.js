@@ -127,6 +127,27 @@ export const getSingleProductControllerById = async (req, res) => {
   }
 };
 
+export const getSingleProductById = async (req, res) => {
+  try {
+    const product = await productModel
+      .findOne({ _id: req.params.pid })
+      .select("-photo")
+      .populate("category");
+    res.status(200).json({
+      success: true,
+      message: "Single Product Fetched by Id",
+      product,
+    });
+  } catch (error) {
+    // console.log(error);
+    res.status(500).send({
+      success: false,
+      message: "Eror while getitng single product",
+      error,
+    });
+  }
+};
+
 // get photo
 export const productPhotoController = async (req, res) => {
   try {

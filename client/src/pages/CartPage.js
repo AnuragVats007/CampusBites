@@ -34,15 +34,35 @@ const CartPage = () => {
   //detele item
   const removeCartItem = async (pid) => {
     try {
-      const res = await axios.post(`${process.env.REACT_APP_API}/api/auth/deletefromcart`, {
-        email : auth.user.email,
-        productId: pid,
-      });
-      let myCart = [...cart];
-      let index = myCart.findIndex((item) => item._id === pid); 
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
+      const res = await axios.put(
+        `${process.env.REACT_APP_API}/api/auth/editcart`,
+        {
+          email: auth.user.email,
+          productId: pid,
+        }
+      );
+      if (res.data.success) {
+        const myCart = cart.reduce(
+          (acc, p) => {
+            if (JSON.stringify(p._id) === JSON.stringify(pid)) {
+              if (acc.count > 0) {
+                acc.cart.push(p);
+              }
+              acc.count++;
+            } else {
+              acc.cart.push(p);
+            }
+            return acc;
+          },
+          { cart: [], count: 0 }
+        );
+        const myCart_ = myCart.cart;
+        setCart(myCart_);
+        localStorage.setItem("cart", JSON.stringify([...myCart_]));
+        // changing size of cart
+        localStorage.setItem("cartSize", JSON.stringify(myCart_?.length));
+        window.location.reload(true);
+      }
     } catch (error) {
       // console.log(error);
     }
@@ -51,14 +71,44 @@ const CartPage = () => {
   //get payment gateway token
   const getToken = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/product/braintree/token`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/product/braintree/token`
+      );
       setClientToken(data?.clientToken);
     } catch (error) {
       // console.log(error);
     }
   };
+  // get cart
+  async function fetchProducts(cartItems) {
+    const cart = await Promise.all(
+      cartItems.map(async (p) => {
+        try {
+          const res = await axios.get(
+            `${process.env.REACT_APP_API}/api/product/get-productbyid/${p}`
+          );
+          return res.data.product;
+        } catch (error) {
+          console.error(`Error fetching product with ID ${p}:`, error);
+          return null; // or some default value indicating an error
+        }
+      })
+    );
+    // 'cart' now contains an array of product data obtained from the API for each cart item
+    return cart;
+  }
+  const getCart = async () => {
+    const cartItems = JSON.parse(localStorage.getItem("cartItemsId"));
+    const cart_ = await fetchProducts(cartItems);
+    setCart([...cart_, ...cart]);
+    localStorage.setItem("cart", JSON.stringify([...cart_, ...cart]));
+  };
   useEffect(() => {
     getToken();
+    if (JSON.parse(localStorage.getItem("isCartLoaded")) === 0) {
+      getCart();
+      localStorage.setItem("isCartLoaded", JSON.stringify(1));
+    }
   }, [auth?.token]);
 
   //handle payments
@@ -66,14 +116,21 @@ const CartPage = () => {
     try {
       setLoading(true);
       const { nonce } = await instance.requestPaymentMethod();
-      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/product/braintree/payment`, {
-        nonce,
-        cart,
-      });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/product/braintree/payment`,
+        {
+          nonce,
+          cart,
+        }
+      );
       setLoading(false);
       await axios.post(`${process.env.REACT_APP_API}/api/auth/deletefullcart`, {email: auth.user.email})
       localStorage.removeItem("cart");
       setCart([]);
+      await axios.put(`${process.env.REACT_APP_API}/api/auth/deletecart`, {
+        email: auth.user.email,
+      });
+      localStorage.setItem("cartSize", JSON.stringify(0));
       // console.log(auth);
       // if(auth?.user?.role===0)  // to check as orders can't be placed from admin accounts...
       navigate("/dashboard/user/orders");
@@ -85,7 +142,6 @@ const CartPage = () => {
   };
   return (
     <Layout title={"Cart"}>
-
       <div className=" cart-page">
         <div className="row">
           <div className="col-md-12">
@@ -99,9 +155,9 @@ const CartPage = () => {
                       auth?.token ? "" : "please login to checkout !"
                     }`
                   : " Your Cart Is Empty"} */}
-                {
-                    auth?.token ? `You have ${cart.length} items in your cart.` : ""
-                }
+                {auth?.token
+                  ? `You have ${cart.length} items in your cart.`
+                  : "please login to checkout !"}
               </p>
             </h1>
           </div>

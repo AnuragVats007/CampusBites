@@ -24,7 +24,7 @@ const __dirname = path.dirname(__filename);
 app.use(express.json());
 app.use(morgan('dev'));
 app.use(cors());
-app.use(express.static(path.join(__dirname, './client/build')));
+app.use(express.static(path.join(__dirname, '../client/build')));
 
 // routes...
 app.use('/api/auth', authRoute);
@@ -33,11 +33,11 @@ app.use('/api/product', productRoute);
 
 // rest api
 app.use('*', function(req,res){
-  res.sendFile(path.join(__dirname, './client/build/index.html'));
+  res.sendFile(path.join(__dirname, '../client/build/index.html'));
 });
-app.get("/", (req, res) => {
-  res.send("<h1>Welcome to our ecommerce app</h1>");
-});
+// app.get("/", (req, res) => {
+//   res.send("<h1>Welcome to our ecommerce app</h1>");
+// });
 
 // Port
 app.listen(process.env.PORT || 8080, () => {

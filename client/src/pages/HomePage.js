@@ -13,6 +13,7 @@ import { useAuth } from "../context/auth";
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
   const [auth, setAuth] = useAuth();
   const [products, setProducts] = useState([]);
@@ -188,17 +189,25 @@ const HomePage = () => {
                     <button
                       className="btn btn-dark ms-1"
                       onClick={async () => {
-                        const { data } = await axios.post(`${process.env.REACT_APP_API}/api/auth/addtocart`, {
-                          email : auth.user.email,
-                          product: p,
-                        });
-                        setCart([...cart, p]);
-                        localStorage.setItem(
-                          "cart",
-                          JSON.stringify([...cart, p])
-                        );
-                        toast.success("Item Added to cart");
-                        // console.log(cart);
+
+                        if(auth?.token){
+                          setCart([...cart, p]);
+                          localStorage.setItem(
+                            "cart",
+                            JSON.stringify([...cart, p])
+                          );
+                          let cartSize = JSON.parse(localStorage.getItem("cartSize"));
+                          localStorage.setItem("cartSize", JSON.stringify(cartSize+1));
+                          await axios.put(`${process.env.REACT_APP_API}/api/auth/addtocart`, {
+                            email: auth.user.email,
+                            product: p
+                          });
+                          toast.success("Item Added to cart");
+                        }
+                        else{
+                          toast.success("Login to add to cart");
+                          navigate("/login");
+                        }
                       }}
                     >
                       ADD TO CART
