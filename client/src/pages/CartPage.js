@@ -124,6 +124,7 @@ const CartPage = () => {
         }
       );
       setLoading(false);
+      await axios.post(`${process.env.REACT_APP_API}/api/auth/deletefullcart`, {email: auth.user.email})
       localStorage.removeItem("cart");
       setCart([]);
       await axios.put(`${process.env.REACT_APP_API}/api/auth/deletecart`, {

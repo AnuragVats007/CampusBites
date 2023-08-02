@@ -15,6 +15,7 @@ const HomePage = () => {
   const navigate = useNavigate();
   const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
+  const [auth, setAuth] = useAuth();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -188,6 +189,7 @@ const HomePage = () => {
                     <button
                       className="btn btn-dark ms-1"
                       onClick={async () => {
+
                         if(auth?.token){
                           setCart([...cart, p]);
                           localStorage.setItem(

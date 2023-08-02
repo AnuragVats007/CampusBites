@@ -116,6 +116,79 @@ const loginController = async (req, res) => {
   }
 };
 
+// update cart
+const addItemToCartController = async (req, res) => {
+  try {
+    const { email, product } = req.body;
+    const user = await userModel.findOne({ email });
+    if (user) {
+      const cart = user.cart;
+      cart.push(product);
+      await userModel.findByIdAndUpdate(user._id, { cart: cart });
+      res.status(200).send({
+        success: true,
+        message: "Cart updated successfully...",
+        user,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong...",
+      error,
+    });
+  }
+};
+
+// deleteFromCart one item
+const deleteFromCartController = async (req, res) => {
+  try {
+    const { email, productId } = req.body;
+    const user = await userModel.findOne({ email });
+    if (user) {
+      const cart = user.cart;
+      console.log(cart);
+      let index = -1, cnt = -1;
+      cart.forEach((item) => {cnt+=1; if(item===productId) {index = cnt}});
+      cart.splice(index, 1);
+      await userModel.findByIdAndUpdate(user._id, { cart: cart });
+      res.status(200).send({
+        success: true,
+        message: "Item deleted from cart successfully...",
+        user,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong...",
+      error,
+    });
+  }
+};
+
+// delete whole cart
+const emptyCartController = async (req,res) => {
+  try {
+    const { email } = req.body;
+    const user = await userModel.findOne({email});
+    if(user){
+      await userModel.findByIdAndUpdate(user._id, { cart: [] });
+      res.status(200).send({
+        success: true,
+        message: "Item deleted from cart successfully...",
+        user,
+      });
+    }
+  } catch (error) {
+    res.status(500).send({
+      success: false,
+      message: "Something went wrong...",
+      error,
+    });
+  }
+}
+
 // forgot password
 const forogotPasswordController = async (req, res) => {
   try {
@@ -328,6 +401,9 @@ const orderStatusController = async (req, res) => {
 export {
   registerController,
   loginController,
+  addItemToCartController,
+  deleteFromCartController,
+  emptyCartController,
   testController,
   forogotPasswordController,
   updateProfileController,
