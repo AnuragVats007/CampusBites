@@ -20,7 +20,6 @@ const router = express.Router();
 // REGISTER || METHOD POST
 router.post("/register", registerController);
 router.post("/login", loginController);
-
 // Forgot password...
 router.post("/forgot-password", forogotPasswordController);
 
