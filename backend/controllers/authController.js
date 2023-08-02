@@ -267,6 +267,80 @@ const updateProfileController = async (req, res) => {
   }
 };
 
+// add to cart
+const addToCart = async (req, res) => {
+  try {
+    const { email, product } = req.body;
+    const response = await userModel.findOne({ email });
+    const cart = response.cart;
+    cart.push(product);
+    await userModel.findByIdAndUpdate(response._id, { cart: cart });
+    res.status(200).json({
+      success: true,
+      message: "Item added to cart",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error while adding item to cart",
+      error,
+    });
+  }
+};
+
+// remove from cart
+const removeFromCart = async (req, res) => {
+  try {
+    const { email, productId } = req.body;
+    const response = await userModel.findOne({ email });
+    const cart = response.cart;
+    // remove item from cart...
+    let count = 0;
+    const updatedCart = [];
+    cart.forEach((c) => {
+      if (JSON.stringify(c._id) == JSON.stringify(productId)) {
+        if (count > 0) updatedCart.push(c);
+        count++;
+      } else {
+        updatedCart.push(c);
+      }
+    });
+    const updateRes = await userModel.findByIdAndUpdate(response._id, { cart: updatedCart });
+    console.log(updateRes.cart);
+    res.status(200).json({
+      success: true,
+      message: "Item removed from cart",
+      updatedCart,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error while removing item from cart",
+      error,
+    });
+  }
+};
+
+// empty the cart
+const deleteCart = async (req, res) => {
+  try {
+    const { email } = req.body;
+    const response = await userModel.findOne({ email });
+    const updatedCart = [];
+    await userModel.findByIdAndUpdate(response._id, { cart: updatedCart });
+    res.status(200).json({
+      success: true,
+      message: "Item removed from cart",
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: "Error while removing item from cart",
+      error,
+    });
+  }
+};
+
 //orders getOne
 const getOrdersController = async (req, res) => {
   try {
@@ -333,6 +407,9 @@ export {
   testController,
   forogotPasswordController,
   updateProfileController,
+  addToCart,
+  removeFromCart,
+  deleteCart,
   getAllOrdersController,
   getOrdersController,
   orderStatusController,

@@ -10,7 +10,7 @@ export default function AdminRoute(){
     const [auth, setAuth] = useAuth();
 
     useEffect(() => {
-        const   authCheck = async () => {
+        const authCheck = async () => {
             const res = await axios.get(`${process.env.REACT_APP_API}/api/auth/admin-auth`);
             if(res.data.ok){
                 setOk(true);
