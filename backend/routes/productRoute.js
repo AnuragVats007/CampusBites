@@ -7,7 +7,6 @@ import {
   getProductController,
   getSingleProductById,
   getSingleProductController,
-  getSingleProductControllerById,
   productCategoryController,
   productCountController,
   productFiltersController,

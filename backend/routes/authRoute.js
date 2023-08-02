@@ -8,9 +8,6 @@ import {
   getOrdersController,
   getAllOrdersController,
   orderStatusController,
-  deleteFromCartController,
-  addItemToCartController,
-  emptyCartController,
   addToCart,
   removeFromCart,
   deleteCart,
@@ -23,15 +20,6 @@ const router = express.Router();
 // REGISTER || METHOD POST
 router.post("/register", registerController);
 router.post("/login", loginController);
-
-// add to cart...
-router.post("/addtocart", requireSignIn, addItemToCartController);
-
-// delete from cart
-router.post("/deletefromcart", requireSignIn, deleteFromCartController);
-
-//delete whole cart
-router.post("/deletefullcart", requireSignIn, emptyCartController);
 
 // Forgot password...
 router.post("/forgot-password", forogotPasswordController);
@@ -61,7 +49,7 @@ router.put("/addtocart", requireSignIn, addToCart);
 //remove item from cart
 router.put("/editcart", requireSignIn, removeFromCart);
 
-// emp tythe whole cart
+// empty the whole cart
 router.put("/deletecart", requireSignIn, deleteCart);
 
 //orders
