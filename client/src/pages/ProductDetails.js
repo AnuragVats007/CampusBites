@@ -3,14 +3,19 @@ import Layout from "../components/Layout/Layout";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/ProductDetailsStyles.css";
+import { useAuth } from "../context/auth";
+import { toast } from "react-hot-toast";
+import { useCart } from "../context/cart";
 
 const ProductDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const [auth, setAuth] = useAuth();
+  const [cart, setCart] = useCart();
   const [product, setProduct] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
 
-  //initalp details
+  //initial details
   useEffect(() => {
     if (params?.slug) getProduct();
   }, [params?.slug]);
@@ -20,8 +25,13 @@ const ProductDetails = () => {
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/product/get-product/${params.slug}`
       );
-      setProduct(data?.product);
-      getSimilarProduct(data?.product._id, data?.product.category._id);
+      if(data?.product){
+        setProduct(data?.product);
+        getSimilarProduct(data?.product._id, data?.product.category._id);
+      }
+      else{
+        navigate("/product*");
+      }
     } catch (error) {
       // console.log(error);
     }
@@ -62,7 +72,30 @@ const ProductDetails = () => {
             })}
           </h6>
           <h6>Category : {product?.category?.name}</h6>
-          <button class="btn btn-secondary ms-1">ADD TO CART</button>
+          <button
+            class="btn btn-secondary ms-1"
+            onClick={async () => {
+              if (auth?.token) {
+                setCart([...cart, product]);
+                localStorage.setItem("cart", JSON.stringify([...cart, product]));
+                let cartSize = JSON.parse(localStorage.getItem("cartSize"));
+                localStorage.setItem("cartSize", JSON.stringify(cartSize + 1));
+                await axios.put(
+                  `${process.env.REACT_APP_API}/api/auth/addtocart`,
+                  {
+                    email: auth.user.email,
+                    product: product,
+                  }
+                );
+                toast.success("Item Added to cart");
+              } else {
+                toast.success("Login to add to cart");
+                navigate("/login");
+              }
+            }}
+          >
+            ADD TO CART
+          </button>
         </div>
       </div>
       <hr />
@@ -99,19 +132,38 @@ const ProductDetails = () => {
                   >
                     More Details
                   </button>
-                  {/* <button
-                  className="btn btn-dark ms-1"
-                  onClick={() => {
-                    setCart([...cart, p]);
-                    localStorage.setItem(
-                      "cart",
-                      JSON.stringify([...cart, p])
-                    );
-                    toast.success("Item Added to cart");
-                  }}
-                >
-                  ADD TO CART
-                </button> */}
+                  <button
+                    className="btn btn-dark ms-1"
+                    onClick={async () => {
+                      if (auth?.token) {
+                        setCart([...cart, p]);
+                        localStorage.setItem(
+                          "cart",
+                          JSON.stringify([...cart, p])
+                        );
+                        let cartSize = JSON.parse(
+                          localStorage.getItem("cartSize")
+                        );
+                        localStorage.setItem(
+                          "cartSize",
+                          JSON.stringify(cartSize + 1)
+                        );
+                        await axios.put(
+                          `${process.env.REACT_APP_API}/api/auth/addtocart`,
+                          {
+                            email: auth.user.email,
+                            product: p,
+                          }
+                        );
+                        toast.success("Item Added to cart");
+                      } else {
+                        toast.success("Login to add to cart");
+                        navigate("/login");
+                      }
+                    }}
+                  >
+                    ADD TO CART
+                  </button>
                 </div>
               </div>
             </div>

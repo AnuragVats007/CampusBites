@@ -8,6 +8,9 @@ import {
   getOrdersController,
   getAllOrdersController,
   orderStatusController,
+  addToCart,
+  removeFromCart,
+  deleteCart,
 } from "../controllers/authController.js";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 //router object...
@@ -38,6 +41,15 @@ router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
 
 //update profile
 router.put("/profile", requireSignIn, updateProfileController);
+
+//add item to cart
+router.put("/addtocart", requireSignIn, addToCart);
+
+//remove item from cart
+router.put("/editcart", requireSignIn, removeFromCart);
+
+// emp tythe whole cart
+router.put("/deletecart", requireSignIn, deleteCart);
 
 //orders
 router.get("/orders", requireSignIn, getOrdersController);

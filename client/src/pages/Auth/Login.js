@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Layout from "../../components/Layout/Layout";
 import { toast } from "react-toastify";
 import axios from "axios";
@@ -32,6 +32,13 @@ const Login = () => {
           token: res.data.token,
         });
         localStorage.setItem("auth", JSON.stringify(res.data));
+        const cartItemsId = res.data.user.cart;
+        // const cartItem = await fetchProducts(cartItemsId);
+        // console.log(cartItem);
+        localStorage.setItem("cartItemsId", JSON.stringify(cartItemsId));
+        localStorage.setItem("cartSize", JSON.stringify(cartItemsId.length));
+        localStorage.setItem("isCartLoaded", JSON.stringify(0));
+        console.log(location);
         navigate(location.state || "/");
       } else {
         toast.error(res.data.message);
@@ -78,7 +85,7 @@ const Login = () => {
               }}
             >
               Forgot Password
-            </button> 
+            </button>
           </div>
           <button type="submit" className="btn btn-primary">
             LOGIN

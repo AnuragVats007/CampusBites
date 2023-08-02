@@ -8,10 +8,12 @@ import toast from "react-hot-toast";
 import Layout from "../components/Layout/Layout";
 import { AiOutlineReload } from "react-icons/ai";
 import "../styles/Homepage.css";
+import { useAuth } from "../context/auth";
 
 
 const HomePage = () => {
   const navigate = useNavigate();
+  const [auth, setAuth] = useAuth();
   const [cart, setCart] = useCart();
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -185,14 +187,25 @@ const HomePage = () => {
                     </button>
                     <button
                       className="btn btn-dark ms-1"
-                      onClick={() => {
-                        setCart([...cart, p]);
-                        localStorage.setItem(
-                          "cart",
-                          JSON.stringify([...cart, p])
-                        );
-                        toast.success("Item Added to cart");
-                        // console.log(cart);
+                      onClick={async () => {
+                        if(auth?.token){
+                          setCart([...cart, p]);
+                          localStorage.setItem(
+                            "cart",
+                            JSON.stringify([...cart, p])
+                          );
+                          let cartSize = JSON.parse(localStorage.getItem("cartSize"));
+                          localStorage.setItem("cartSize", JSON.stringify(cartSize+1));
+                          await axios.put(`${process.env.REACT_APP_API}/api/auth/addtocart`, {
+                            email: auth.user.email,
+                            product: p
+                          });
+                          toast.success("Item Added to cart");
+                        }
+                        else{
+                          toast.success("Login to add to cart");
+                          navigate("/login");
+                        }
                       }}
                     >
                       ADD TO CART
