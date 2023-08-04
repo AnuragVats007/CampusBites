@@ -201,7 +201,18 @@ const addToCartController = async (req, res) => {
     const { email, product } = req.body;
     const response = await userModel.findOne({ email });
     const cart = response.cart;
-    cart.push(product);
+    const result = cart.findIndex((c) => {
+      console.log(JSON.stringify(c.product._id) );
+      return JSON.stringify(c.product._id) === JSON.stringify(product._id);
+    });
+    console.log(result);
+    if(result>=0){
+      cart[result].count++;
+    }
+    else{
+      cart.push({product: product, count : 1});
+    }
+    // cart.push(product);
     await userModel.findByIdAndUpdate(response._id, { cart: cart });
     res.status(200).json({
       success: true,
@@ -223,12 +234,13 @@ const removeFromCartController = async (req, res) => {
     const response = await userModel.findOne({ email });
     const cart = response.cart;
     // remove item from cart...
-    let count = 0;
     const updatedCart = [];
     cart.forEach((c) => {
-      if (JSON.stringify(c._id) == JSON.stringify(productId)) {
-        if (count > 0) updatedCart.push(c);
-        count++;
+      if (JSON.stringify(c.product._id) == JSON.stringify(productId)) {
+        if(c.count!==1){
+          c.count--;
+          updatedCart.push(c);
+        }
       } else {
         updatedCart.push(c);
       }
