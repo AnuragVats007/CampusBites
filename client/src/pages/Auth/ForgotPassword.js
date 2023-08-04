@@ -20,7 +20,7 @@ const ForgotPassword = () => {
         {
           email,
           newPassword,
-          answer
+          answer,
         }
       );
       // console.log(res);
@@ -41,7 +41,7 @@ const ForgotPassword = () => {
       <div className="form-container">
         <h1>Reset Password</h1>
         <form onSubmit={handleSubmit}>
-        <div className="mb-3">
+          <div className="mb-3">
             <input
               type="email"
               value={email}
@@ -81,6 +81,6 @@ const ForgotPassword = () => {
       </div>
     </Layout>
   );
-}
+};
 
-export default ForgotPassword
+export default ForgotPassword;

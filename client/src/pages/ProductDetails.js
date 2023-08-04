@@ -25,11 +25,10 @@ const ProductDetails = () => {
       const { data } = await axios.get(
         `${process.env.REACT_APP_API}/api/product/get-product/${params.slug}`
       );
-      if(data?.product){
+      if (data?.product) {
         setProduct(data?.product);
         getSimilarProduct(data?.product._id, data?.product.category._id);
-      }
-      else{
+      } else {
         navigate("/product*");
       }
     } catch (error) {
@@ -77,7 +76,10 @@ const ProductDetails = () => {
             onClick={async () => {
               if (auth?.token) {
                 setCart([...cart, product]);
-                localStorage.setItem("cart", JSON.stringify([...cart, product]));
+                localStorage.setItem(
+                  "cart",
+                  JSON.stringify([...cart, product])
+                );
                 let cartSize = JSON.parse(localStorage.getItem("cartSize"));
                 localStorage.setItem("cartSize", JSON.stringify(cartSize + 1));
                 await axios.put(

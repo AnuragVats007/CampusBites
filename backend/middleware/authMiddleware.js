@@ -24,27 +24,26 @@ const requireSignIn = async (req, res, next) => {
 };
 
 //admin
-const isAdmin = async (req,res, next) => {
-    try {
-        const user = await userModel.findById(req.user._id);
-        // console.log(user);
-        if(!user.role){
-            return res.status(401).send({
-                success: false,
-                message: "Unauthorized access",
-            });
-        }
-        else{
-            next();
-        }
-    } catch (error) {
-        // console.log(`Error in checking for admin: ${error}`);
-        res.status(500).send({
-            success: false,
-            message: "Error in checking for admin...",
-            error,
-        });
+const isAdmin = async (req, res, next) => {
+  try {
+    const user = await userModel.findById(req.user._id);
+    // console.log(user);
+    if (!user.role) {
+      return res.status(401).send({
+        success: false,
+        message: "Unauthorized access",
+      });
+    } else {
+      next();
     }
-}
+  } catch (error) {
+    // console.log(`Error in checking for admin: ${error}`);
+    res.status(500).send({
+      success: false,
+      message: "Error in checking for admin...",
+      error,
+    });
+  }
+};
 
 export { requireSignIn, isAdmin };

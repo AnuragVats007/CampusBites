@@ -21,7 +21,9 @@ const CreateProduct = () => {
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/category/get-category`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/category/get-category`
+      );
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -47,14 +49,14 @@ const CreateProduct = () => {
       productData.append("photo", photo);
       productData.append("category", category);
       const { data } = axios.post(
-        `${process.env.REACT_APP_API}/api/product/create-product`, 
+        `${process.env.REACT_APP_API}/api/product/create-product`,
         productData
       );
       if (data?.success) {
         toast.error(data?.message);
       } else {
         toast.success("Product Created Successfully");
-        navigate(`/dashboard/admin/products`); 
+        navigate(`/dashboard/admin/products`);
       }
     } catch (error) {
       // console.log(error);
@@ -63,7 +65,7 @@ const CreateProduct = () => {
   };
 
   return (
-    <Layout title={'Admin Dashboard - Create Product'}>
+    <Layout title={"Admin Dashboard - Create Product"}>
       <div className="container-fluid m-3 p-3 dashboard">
         <div className="row">
           <div className="col-md-3">

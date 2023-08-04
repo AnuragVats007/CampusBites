@@ -3,6 +3,7 @@ import orderModel from "../models/orderModel.js";
 import { hashPassword, comparePassword } from "../helpers/authHelper.js";
 import JWT from "jsonwebtoken";
 
+//register
 const registerController = async (req, res) => {
   try {
     const { name, email, password, phone, address, answer } = req.body;
@@ -195,7 +196,7 @@ const updateProfileController = async (req, res) => {
 };
 
 // add to cart
-const addToCart = async (req, res) => {
+const addToCartController = async (req, res) => {
   try {
     const { email, product } = req.body;
     const response = await userModel.findOne({ email });
@@ -216,7 +217,7 @@ const addToCart = async (req, res) => {
 };
 
 // remove from cart
-const removeFromCart = async (req, res) => {
+const removeFromCartController = async (req, res) => {
   try {
     const { email, productId } = req.body;
     const response = await userModel.findOne({ email });
@@ -232,8 +233,10 @@ const removeFromCart = async (req, res) => {
         updatedCart.push(c);
       }
     });
-    const updateRes = await userModel.findByIdAndUpdate(response._id, { cart: updatedCart });
-    console.log(updateRes.cart);
+    const updateRes = await userModel.findByIdAndUpdate(response._id, {
+      cart: updatedCart,
+    });
+    // console.log(updateRes.cart);
     res.status(200).json({
       success: true,
       message: "Item removed from cart",
@@ -249,7 +252,7 @@ const removeFromCart = async (req, res) => {
 };
 
 // empty the cart
-const deleteCart = async (req, res) => {
+const deleteCartController = async (req, res) => {
   try {
     const { email } = req.body;
     const response = await userModel.findOne({ email });
@@ -331,9 +334,9 @@ export {
   testController,
   forogotPasswordController,
   updateProfileController,
-  addToCart,
-  removeFromCart,
-  deleteCart,
+  addToCartController,
+  removeFromCartController,
+  deleteCartController,
   getAllOrdersController,
   getOrdersController,
   orderStatusController,

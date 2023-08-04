@@ -8,9 +8,9 @@ import {
   getOrdersController,
   getAllOrdersController,
   orderStatusController,
-  addToCart,
-  removeFromCart,
-  deleteCart,
+  addToCartController,
+  removeFromCartController,
+  deleteCartController,
 } from "../controllers/authController.js";
 import { isAdmin, requireSignIn } from "../middleware/authMiddleware.js";
 //router object...
@@ -19,10 +19,11 @@ const router = express.Router();
 // routing...
 // REGISTER || METHOD POST
 router.post("/register", registerController);
+//login
 router.post("/login", loginController);
 // Forgot password...
 router.post("/forgot-password", forogotPasswordController);
-
+//test
 router.get("/test", requireSignIn, isAdmin, testController);
 
 //protected User route...
@@ -43,13 +44,13 @@ router.get("/admin-auth", requireSignIn, isAdmin, (req, res) => {
 router.put("/profile", requireSignIn, updateProfileController);
 
 //add item to cart
-router.put("/addtocart", requireSignIn, addToCart);
+router.put("/addtocart", requireSignIn, addToCartController);
 
 //remove item from cart
-router.put("/editcart", requireSignIn, removeFromCart);
+router.put("/editcart", requireSignIn, removeFromCartController);
 
 // empty the whole cart
-router.put("/deletecart", requireSignIn, deleteCart);
+router.put("/deletecart", requireSignIn, deleteCartController);
 
 //orders
 router.get("/orders", requireSignIn, getOrdersController);

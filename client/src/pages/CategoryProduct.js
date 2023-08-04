@@ -3,12 +3,17 @@ import Layout from "../components/Layout/Layout";
 import { useParams, useNavigate } from "react-router-dom";
 import "../styles/CategoryProductStyles.css";
 import axios from "axios";
+import { toast } from "react-hot-toast";
+import { useAuth } from "../context/auth";
+import { useCart } from "../context/cart";
 
 const CategoryProduct = () => {
   const params = useParams();
   const navigate = useNavigate();
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState([]);
+  const [auth, setAuth] = useAuth();
+  const [cart, setCart] = useCart();
 
   useEffect(() => {
     if (params?.slug) getPrductsByCategory();
@@ -60,19 +65,38 @@ const CategoryProduct = () => {
                       >
                         More Details
                       </button>
-                      {/* <button
-                    className="btn btn-dark ms-1"
-                    onClick={() => {
-                      setCart([...cart, p]);
-                      localStorage.setItem(
-                        "cart",
-                        JSON.stringify([...cart, p])
-                      );
-                      toast.success("Item Added to cart");
-                    }}
-                  >
-                    ADD TO CART
-                  </button> */}
+                      <button
+                        className="btn btn-dark ms-1"
+                        onClick={async () => {
+                          if (auth?.token) {
+                            setCart([...cart, p]);
+                            localStorage.setItem(
+                              "cart",
+                              JSON.stringify([...cart, p])
+                            );
+                            let cartSize = JSON.parse(
+                              localStorage.getItem("cartSize")
+                            );
+                            localStorage.setItem(
+                              "cartSize",
+                              JSON.stringify(cartSize + 1)
+                            );
+                            await axios.put(
+                              `${process.env.REACT_APP_API}/api/auth/addtocart`,
+                              {
+                                email: auth.user.email,
+                                product: p,
+                              }
+                            );
+                            toast.success("Item Added to cart");
+                          } else {
+                            toast.success("Login to add to cart");
+                            navigate("/login");
+                          }
+                        }}
+                      >
+                        ADD TO CART
+                      </button>
                     </div>
                   </div>
                 </div>

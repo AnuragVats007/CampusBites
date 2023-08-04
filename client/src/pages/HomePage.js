@@ -10,7 +10,6 @@ import { AiOutlineReload } from "react-icons/ai";
 import "../styles/Homepage.css";
 import { useAuth } from "../context/auth";
 
-
 const HomePage = () => {
   const navigate = useNavigate();
   const [cart, setCart] = useCart();
@@ -26,7 +25,9 @@ const HomePage = () => {
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/category/get-category`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/category/get-category`
+      );
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -44,7 +45,9 @@ const HomePage = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/product/product-list/${page}`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/product/product-list/${page}`
+      );
       setLoading(false);
       setProducts(data.products);
     } catch (error) {
@@ -56,7 +59,9 @@ const HomePage = () => {
   //getTOtal COunt
   const getTotal = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/product/product-count`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/product/product-count`
+      );
       setTotal(data?.total);
     } catch (error) {
       // console.log(error);
@@ -72,7 +77,9 @@ const HomePage = () => {
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/product/product-list/${page}`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/product/product-list/${page}`
+      );
       setLoading(false);
       setProducts([...products, ...data?.products]);
     } catch (error) {
@@ -102,10 +109,13 @@ const HomePage = () => {
   // get filterd product
   const filterProduct = async () => {
     try {
-      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/product/product-filters`, {
-        checked,
-        radio,
-      });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/product/product-filters`,
+        {
+          checked,
+          radio,
+        }
+      );
       setProducts(data?.products);
     } catch (error) {
       // console.log(error);
@@ -113,8 +123,8 @@ const HomePage = () => {
   };
 
   return (
-    <Layout title={'Ecommerce App'}>
-        {/* banner image */}
+    <Layout title={"Ecommerce App"}>
+      {/* banner image */}
       <img
         src="/images/banner.png"
         className="banner-img"
@@ -188,21 +198,28 @@ const HomePage = () => {
                     <button
                       className="btn btn-dark ms-1"
                       onClick={async () => {
-                        if(auth?.token){
+                        if (auth?.token) {
                           setCart([...cart, p]);
                           localStorage.setItem(
                             "cart",
                             JSON.stringify([...cart, p])
                           );
-                          let cartSize = JSON.parse(localStorage.getItem("cartSize"));
-                          localStorage.setItem("cartSize", JSON.stringify(cartSize+1));
-                          await axios.put(`${process.env.REACT_APP_API}/api/auth/addtocart`, {
-                            email: auth.user.email,
-                            product: p
-                          });
+                          let cartSize = JSON.parse(
+                            localStorage.getItem("cartSize")
+                          );
+                          localStorage.setItem(
+                            "cartSize",
+                            JSON.stringify(cartSize + 1)
+                          );
+                          await axios.put(
+                            `${process.env.REACT_APP_API}/api/auth/addtocart`,
+                            {
+                              email: auth.user.email,
+                              product: p,
+                            }
+                          );
                           toast.success("Item Added to cart");
-                        }
-                        else{
+                        } else {
                           toast.success("Login to add to cart");
                           navigate("/login");
                         }
@@ -238,7 +255,7 @@ const HomePage = () => {
         </div>
       </div>
     </Layout>
-  )
-}
+  );
+};
 
-export default HomePage
+export default HomePage;

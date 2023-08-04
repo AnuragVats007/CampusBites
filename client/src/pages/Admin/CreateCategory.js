@@ -17,9 +17,12 @@ const CreateCategory = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const { data } = await axios.post(`${process.env.REACT_APP_API}/api/category/create-category`, {
-        name,
-      });
+      const { data } = await axios.post(
+        `${process.env.REACT_APP_API}/api/category/create-category`,
+        {
+          name,
+        }
+      );
       if (data?.success) {
         toast.success(`${name} is created`);
         getAllCategory();

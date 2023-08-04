@@ -16,7 +16,8 @@ var gateway = new braintree.BraintreeGateway({
   privateKey: process.env.BRAINTREE_PRIVATE_KEY,
 });
 
-export const createProductController = async (req, res) => {
+//create product
+const createProductController = async (req, res) => {
   try {
     const { name, description, price, category, quantity } = req.fields;
     const { photo } = req.files;
@@ -60,7 +61,7 @@ export const createProductController = async (req, res) => {
 };
 
 //get all products
-export const getProductController = async (req, res) => {
+const getProductController = async (req, res) => {
   try {
     const products = await productModel
       .find({})
@@ -85,7 +86,7 @@ export const getProductController = async (req, res) => {
 };
 
 // get single product
-export const getSingleProductController = async (req, res) => {
+const getSingleProductController = async (req, res) => {
   try {
     const product = await productModel
       .findOne({ slug: req.params.slug })
@@ -106,7 +107,8 @@ export const getSingleProductController = async (req, res) => {
   }
 };
 
-export const getSingleProductById = async (req, res) => {
+// get single product by id
+const getSingleProductById = async (req, res) => {
   try {
     const product = await productModel
       .findOne({ _id: req.params.pid })
@@ -128,7 +130,7 @@ export const getSingleProductById = async (req, res) => {
 };
 
 // get photo
-export const productPhotoController = async (req, res) => {
+const productPhotoController = async (req, res) => {
   try {
     const product = await productModel.findById(req.params.pid).select("photo");
     if (product.photo.data) {
@@ -146,7 +148,7 @@ export const productPhotoController = async (req, res) => {
 };
 
 //delete controller
-export const deleteProductController = async (req, res) => {
+const deleteProductController = async (req, res) => {
   try {
     await productModel.findByIdAndDelete(req.params.pid).select("-photo");
     res.status(200).send({
@@ -163,24 +165,13 @@ export const deleteProductController = async (req, res) => {
   }
 };
 
-//upate product
-export const updateProductController = async (req, res) => {
+//update product
+const updateProductController = async (req, res) => {
   try {
-    const { name, description, price, category, quantity } =
-      req.fields;
+    const { name, description, price, category, quantity } = req.fields;
     const { photo } = req.files;
     //alidation
     switch (true) {
-    //   case !name:
-    //     return res.status(500).send({ error: "Name is Required" });
-    //   case !description:
-    //     return res.status(500).send({ error: "Description is Required" });
-    //   case !price:
-    //     return res.status(500).send({ error: "Price is Required" });
-    //   case !category:
-    //     return res.status(500).send({ error: "Category is Required" });
-    //   case !quantity:
-    //     return res.status(500).send({ error: "Quantity is Required" });
       case photo && photo.size > 1000000:
         return res
           .status(500)
@@ -213,7 +204,7 @@ export const updateProductController = async (req, res) => {
 };
 
 // filters
-export const productFiltersController = async (req, res) => {
+const productFiltersController = async (req, res) => {
   try {
     const { checked, radio } = req.body;
     let args = {};
@@ -235,7 +226,7 @@ export const productFiltersController = async (req, res) => {
 };
 
 // product count
-export const productCountController = async (req, res) => {
+const productCountController = async (req, res) => {
   try {
     const total = await productModel.find({}).estimatedDocumentCount();
     res.status(200).send({
@@ -253,7 +244,7 @@ export const productCountController = async (req, res) => {
 };
 
 // product list base on page
-export const productListController = async (req, res) => {
+const productListController = async (req, res) => {
   try {
     const perPage = 6;
     const page = req.params.page ? req.params.page : 1;
@@ -278,7 +269,7 @@ export const productListController = async (req, res) => {
 };
 
 // search product
-export const searchProductController = async (req, res) => {
+const searchProductController = async (req, res) => {
   try {
     const { keyword } = req.params;
     const results = await productModel
@@ -301,7 +292,7 @@ export const searchProductController = async (req, res) => {
 };
 
 // similar products
-export const relatedProductController = async (req, res) => {
+const relatedProductController = async (req, res) => {
   try {
     const { pid, cid } = req.params;
     const products = await productModel
@@ -325,8 +316,8 @@ export const relatedProductController = async (req, res) => {
     });
   }
 };
-// get prdocyst by catgory
-export const productCategoryController = async (req, res) => {
+// get prdocuct by catgory
+const productCategoryController = async (req, res) => {
   try {
     const category = await categoryModel.findOne({ slug: req.params.slug });
     const products = await productModel.find({ category }).populate("category");
@@ -345,9 +336,8 @@ export const productCategoryController = async (req, res) => {
   }
 };
 
-//payment gateway api
-//token
-export const braintreeTokenController = async (req, res) => {
+//payment gateway api token
+const braintreeTokenController = async (req, res) => {
   try {
     gateway.clientToken.generate({}, function (err, response) {
       if (err) {
@@ -362,12 +352,12 @@ export const braintreeTokenController = async (req, res) => {
 };
 
 //payment
-export const brainTreePaymentController = async (req, res) => {
+const brainTreePaymentController = async (req, res) => {
   try {
     const { nonce, cart } = req.body;
     let total = 0;
     cart.map((i) => {
-      total += i.price;  
+      total += i.price;
     });
     let newTransaction = gateway.transaction.sale(
       {
@@ -393,4 +383,22 @@ export const brainTreePaymentController = async (req, res) => {
   } catch (error) {
     // console.log(error);
   }
+};
+
+export {
+  brainTreePaymentController,
+  braintreeTokenController,
+  createProductController,
+  deleteProductController,
+  getProductController,
+  getSingleProductById,
+  getSingleProductController,
+  productCategoryController,
+  productCountController,
+  productFiltersController,
+  productListController,
+  productPhotoController,
+  relatedProductController,
+  searchProductController,
+  updateProductController,
 };

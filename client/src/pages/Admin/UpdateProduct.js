@@ -45,7 +45,9 @@ const UpdateProduct = () => {
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(`${process.env.REACT_APP_API}/api/category/get-category`);
+      const { data } = await axios.get(
+        `${process.env.REACT_APP_API}/api/category/get-category`
+      );
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -89,7 +91,7 @@ const UpdateProduct = () => {
   //delete a product
   const handleDelete = async () => {
     try {
-      let answer = window.prompt("Are You Sure want to delete this product ? "); 
+      let answer = window.prompt("Are You Sure want to delete this product ? ");
       if (!answer) return;
       const { data } = await axios.delete(
         `${process.env.REACT_APP_API}/api/product/delete-product/${id}`

@@ -18,7 +18,7 @@ const Header = () => {
       token: "",
     });
     // localStorage.removeItem("auth");
-    localStorage.clear();  
+    localStorage.clear();
     setCart([]);
     toast.success("Logout Successfully");
   };
@@ -124,9 +124,13 @@ const Header = () => {
                   </li>
                   <li className="nav-item">
                     <NavLink to="/cart" className="nav-link">
-                      <Badge count={localStorage.getItem('cartSize')} showZero offset={[10, -5]}>
-                    Cart
-                  </Badge>
+                      <Badge
+                        count={localStorage.getItem("cartSize")}
+                        showZero
+                        offset={[10, -5]}
+                      >
+                        Cart
+                      </Badge>
                     </NavLink>
                   </li>
                 </>
