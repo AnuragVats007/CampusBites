@@ -201,13 +201,13 @@ const addToCartController = async (req, res) => {
     const { email, product } = req.body;
     const response = await userModel.findOne({ email });
     const cart = response.cart;
-    const result = cart.findIndex((c) => {
+    const index = cart.findIndex((c) => {
       console.log(JSON.stringify(c.product._id) );
       return JSON.stringify(c.product._id) === JSON.stringify(product._id);
     });
-    console.log(result);
-    if(result>=0){
-      cart[result].count++;
+    // console.log(index);
+    if(index>=0){
+      cart[index].count++;
     }
     else{
       cart.push({product: product, count : 1});
@@ -237,7 +237,7 @@ const removeFromCartController = async (req, res) => {
     const updatedCart = [];
     cart.forEach((c) => {
       if (JSON.stringify(c.product._id) == JSON.stringify(productId)) {
-        if(c.count!==1){
+        if(c.count>1){
           c.count--;
           updatedCart.push(c);
         }

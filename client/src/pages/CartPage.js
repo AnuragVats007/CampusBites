@@ -21,7 +21,7 @@ const CartPage = () => {
     try {
       let total = 0;
       cart?.map((item) => {
-        total = total + item.price;
+        total = total + item.product.price*item.count;
       });
       return total.toLocaleString("en-US", {
         style: "currency",
@@ -44,19 +44,20 @@ const CartPage = () => {
       if (res.data.success) {
         const myCart = cart.reduce(
           (acc, p) => {
-            if (JSON.stringify(p._id) === JSON.stringify(pid)) {
-              if (acc.count > 0) {
+            if (JSON.stringify(p.product._id) === JSON.stringify(pid)) {
+              if (p.count > 1) {
+                p.count-=1;
                 acc.cart.push(p);
               }
-              acc.count++;
             } else {
               acc.cart.push(p);
             }
             return acc;
           },
-          { cart: [], count: 0 }
+          { cart: [] }
         );
         const myCart_ = myCart.cart;
+        // console.log(myCart_);
         setCart(myCart_);
         localStorage.setItem("cart", JSON.stringify([...myCart_]));
         // changing size of cart
@@ -67,6 +68,56 @@ const CartPage = () => {
       // console.log(error);
     }
   };
+
+  //add cart item...
+  const addCartItem = async (p) => {
+    try {
+      if (auth?.token) {
+        const index = cart.findIndex((c) => {
+          return JSON.stringify(c.product._id) === JSON.stringify(p._id);
+        });
+        // console.log(result);
+        if(index>=0){
+          const newCart = cart;
+          newCart[index].count+=1;
+          console.log(newCart);
+          setCart([...newCart]);
+          localStorage.setItem(
+            "cart",
+            JSON.stringify([...newCart])
+          );
+        }
+        else{
+          setCart([...cart, {product: p, count : 1}]);
+          localStorage.setItem(
+            "cart",
+            JSON.stringify([...cart, {product: p, count : 1}])
+          );
+          let cartSize = JSON.parse(
+            localStorage.getItem("cartSize")
+          );
+          localStorage.setItem(
+            "cartSize",
+            JSON.stringify(cartSize + 1)
+          );
+        }
+        // setCart([...cart, p]);
+        await axios.put(
+          `${process.env.REACT_APP_API}/api/auth/addtocart`,
+          {
+            email: auth.user.email,
+            product: p,
+          }
+        );
+        toast.success("Item Added to cart");
+      } else {
+        toast.success("Login to add to cart");
+        navigate("/login");
+      }
+    } catch (error) {
+      // console.log(error);
+    }
+  }
 
   //get payment gateway token
   const getToken = async () => {
@@ -79,36 +130,8 @@ const CartPage = () => {
       // console.log(error);
     }
   };
-  // get cart
-  async function fetchProducts(cartItems) {
-    const cart = await Promise.all(
-      cartItems.map(async (p) => {
-        try {
-          const res = await axios.get(
-            `${process.env.REACT_APP_API}/api/product/get-productbyid/${p}`
-          );
-          return res.data.product;
-        } catch (error) {
-          console.error(`Error fetching product with ID ${p}:`, error);
-          return null; // or some default value indicating an error
-        }
-      })
-    );
-    // 'cart' now contains an array of product data obtained from the API for each cart item
-    return cart;
-  }
-  const getCart = async () => {
-    const cartItems = JSON.parse(localStorage.getItem("cartItemsId"));
-    const cart_ = await fetchProducts(cartItems);
-    setCart([...cart_, ...cart]);
-    localStorage.setItem("cart", JSON.stringify([...cart_, ...cart]));
-  };
   useEffect(() => {
     getToken();
-    if (JSON.parse(localStorage.getItem("isCartLoaded")) === 0) {
-      getCart();
-      localStorage.setItem("isCartLoaded", JSON.stringify(1));
-    }
   }, [auth?.token]);
 
   //handle payments
@@ -165,27 +188,38 @@ const CartPage = () => {
           <div className="row ">
             <div className="col-md-7  p-0 m-0">
               {cart?.map((p) => (
-                <div className="row card flex-row" key={p._id}>
+                <div className="row card flex-row" key={p.product._id}>
                   <div className="col-md-4">
                     <img
-                      src={`${process.env.REACT_APP_API}/api/product/product-photo/${p._id}`}
+                      src={`${process.env.REACT_APP_API}/api/product/product-photo/${p.product._id}`}
                       className="card-img-top"
-                      alt={p.name}
+                      alt={p.product.name}
                       width="100%"
                       height={"130px"}
                     />
                   </div>
                   <div className="col-md-4">
-                    <p>{p.name}</p>
-                    <p>{p.description.substring(0, 30)}</p>
-                    <p>Price : {p.price}</p>
+                    <p>{p.product.name}</p>
+                    <p>{p.product.description.substring(0, 30)}</p>
+                    <p>Price : {p.product.price}</p>
                   </div>
                   <div className="col-md-4 cart-remove-btn">
                     <button
                       className="btn btn-danger"
-                      onClick={() => removeCartItem(p._id)}
+                      onClick={() => removeCartItem(p.product._id)}
                     >
                       Remove
+                    </button>
+                    <button
+                      className="btn btn-primary"
+                    >
+                      {p.count}
+                    </button>
+                    <button
+                      className="btn btn-success"
+                      onClick={() => addCartItem(p.product)}
+                    >
+                      Add
                     </button>
                   </div>
                 </div>

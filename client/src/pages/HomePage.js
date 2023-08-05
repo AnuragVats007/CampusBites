@@ -121,6 +121,90 @@ const HomePage = () => {
       // console.log(error);
     }
   };
+  
+  // get cart
+  async function fetchProducts(cartItems) {
+    const cart = await Promise.all(
+      cartItems.map(async (p) => {
+        try {
+          const res = await axios.get(
+            `${process.env.REACT_APP_API}/api/product/get-productbyid/${p.product}`
+          );
+          const cartItem = {product: res.data.product, count: p.count};
+          return cartItem;
+        } catch (error) {
+          console.error(`Error fetching product with ID ${p}:`, error);
+          return null; // or some default value indicating an error
+        }
+      })
+    );
+    // 'cart' now contains an array of product data obtained from the API for each cart item
+    return cart;
+  }
+  const getCart = async () => {
+    const cartItems = JSON.parse(localStorage.getItem("cartItemsId"));
+    // console.log(cartItems);
+    const cart_ = await fetchProducts(cartItems);
+    // console.log(cart_);
+    setCart([...cart_, ...cart]);
+    localStorage.setItem("cart", JSON.stringify([...cart_, ...cart]));
+  };
+  useEffect(() => {
+    if (JSON.parse(localStorage.getItem("isCartLoaded")) === 0) {
+      getCart();
+      localStorage.setItem("isCartLoaded", JSON.stringify(1));
+    }
+  }, [auth?.token]);
+
+  // add to cart
+  const addCartItem = async (p) => {
+    try {
+      if (auth?.token) {
+        const index = cart.findIndex((c) => {
+          return JSON.stringify(c.product._id) === JSON.stringify(p._id);
+        });
+        // console.log(result);
+        if(index>=0){
+          const newCart = cart;
+          newCart[index].count+=1;
+          console.log(newCart);
+          setCart([...newCart]);
+          localStorage.setItem(
+            "cart",
+            JSON.stringify([...newCart])
+          );
+        }
+        else{
+          setCart([...cart, {product: p, count : 1}]);
+          localStorage.setItem(
+            "cart",
+            JSON.stringify([...cart, {product: p, count : 1}])
+          );
+          let cartSize = JSON.parse(
+            localStorage.getItem("cartSize")
+          );
+          localStorage.setItem(
+            "cartSize",
+            JSON.stringify(cartSize + 1)
+          );
+        }
+        // setCart([...cart, p]);
+        await axios.put(
+          `${process.env.REACT_APP_API}/api/auth/addtocart`,
+          {
+            email: auth.user.email,
+            product: p,
+          }
+        );
+        toast.success("Item Added to cart");
+      } else {
+        toast.success("Login to add to cart");
+        navigate("/login");
+      }
+    } catch (error) {
+      
+    }
+  }
 
   return (
     <Layout title={"Ecommerce App"}>
@@ -197,33 +281,7 @@ const HomePage = () => {
                     </button>
                     <button
                       className="btn btn-dark ms-1"
-                      onClick={async () => {
-                        if (auth?.token) {
-                          setCart([...cart, p]);
-                          localStorage.setItem(
-                            "cart",
-                            JSON.stringify([...cart, p])
-                          );
-                          let cartSize = JSON.parse(
-                            localStorage.getItem("cartSize")
-                          );
-                          localStorage.setItem(
-                            "cartSize",
-                            JSON.stringify(cartSize + 1)
-                          );
-                          await axios.put(
-                            `${process.env.REACT_APP_API}/api/auth/addtocart`,
-                            {
-                              email: auth.user.email,
-                              product: p,
-                            }
-                          );
-                          toast.success("Item Added to cart");
-                        } else {
-                          toast.success("Login to add to cart");
-                          navigate("/login");
-                        }
-                      }}
+                      onClick={() => {addCartItem(p)}}
                     >
                       ADD TO CART
                     </button>
