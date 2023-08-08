@@ -80,3 +80,11 @@
     font-size: 20px !important;
   }
   
+  /* ==================
+  search // home page class is also used in search
+  ============== */
+
+  .search {
+    margin-left: 5vw;
+    align-items: center;
+  }

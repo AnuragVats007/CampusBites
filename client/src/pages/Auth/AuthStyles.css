@@ -5,10 +5,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 70vh;
+    min-height: 80vh;
     flex-direction: column;
-    background-color: #ffdee9;
-    background-image: linear-gradient(0deg, #ffdee9 0%, #b5fffc 100%);
+    background-color: #ffffff;
+    /* background-image: linear-gradient(0deg, #4477CE 0%, #8CABFF 100%); */
   }
   
   .form-container form {
@@ -31,25 +31,26 @@
   }
   
   .form-container form button {
-    border: 1px solid black;
-    border-radius: 0;
-    background-color: #000;
+    border: 1px solid #1d6ffc;
+    border-radius: 10;
+    background-color: #1d6ffc;
     color: white;
     width: 250px;
   }
   
   .form-container form button:hover {
-    border: 1px solid black;
-    background: #000000; /* fallback for old browsers */
+    border: 1px solid #3D94F6;
+    background: #3D94F6; /* fallback for old browsers */
+    box-shadow: 0px 5px 5px 0px black;
     background: -webkit-linear-gradient(
       to right,
-      #434343,
-      #000000
+      #3D94F6,
+      #3D94F6
     ); /* Chrome 10-25, Safari 5.1-6 */
     background: linear-gradient(
       to right,
-      #434343,
-      #000000
+      #3D94F6,
+      #3D94F6
     ); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
   }
   

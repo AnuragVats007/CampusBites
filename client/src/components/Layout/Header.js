@@ -6,6 +6,7 @@ import SearchInput from "../Form/SearchInput";
 import useCategory from "../../hooks/useCategory";
 import { useCart } from "../../context/cart";
 import { Badge } from "antd";
+import "./Header.css";
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
@@ -24,7 +25,7 @@ const Header = () => {
   };
   return (
     <>
-      <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top">
+      <nav className="navbar navbar-expand-lg bg-body-tertiary fixed-top navbar-default">
         <div className="container-fluid">
           <button
             className="navbar-toggler"
@@ -39,14 +40,14 @@ const Header = () => {
           </button>
           <div className="collapse navbar-collapse" id="navbarTogglerDemo01">
             <Link to="/" className="navbar-brand">
-              🛒 Ecommerce App
+              <p id="brandname">Campus Bites</p>
             </Link>
             <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
               <SearchInput />
               <li className="nav-item">
-                <NavLink to="/" className="nav-link ">
-                  Home
-                </NavLink>
+                <Link to="/" className="nav-link ">
+                  HOME
+                </Link>
               </li>
               <li className="nav-item dropdown">
                 <Link
@@ -54,12 +55,12 @@ const Header = () => {
                   to={"/categories"}
                   data-bs-toggle="dropdown"
                 >
-                  Categories
+                  CATEGORIES
                 </Link>
                 <ul className="dropdown-menu">
                   <li>
                     <Link className="dropdown-item" to={"/categories"}>
-                      All Categories
+                      ALL CATEGORIES
                     </Link>
                   </li>
                   {categories?.map((c) => (
@@ -78,20 +79,20 @@ const Header = () => {
               {!auth?.user ? (
                 <>
                   <li className="nav-item">
-                    <NavLink to="/register" className="nav-link">
-                      Register
-                    </NavLink>
+                    <Link to="/register" className="nav-link">
+                      SIGN UP
+                    </Link>
                   </li>
                   <li className="nav-item">
-                    <NavLink to="/login" className="nav-link">
-                      Login
-                    </NavLink>
+                    <Link to="/login" className="nav-link">
+                      SIGN IN
+                    </Link>
                   </li>
                 </>
               ) : (
                 <>
                   <li className="nav-item dropdown">
-                    <NavLink
+                    <Link
                       className="nav-link dropdown-toggle"
                       href="#"
                       role="button"
@@ -99,39 +100,39 @@ const Header = () => {
                       style={{ border: "none" }}
                     >
                       {auth?.user?.name}
-                    </NavLink>
+                    </Link>
                     <ul className="dropdown-menu">
                       <li>
-                        <NavLink
+                        <Link
                           to={`/dashboard/${
                             auth?.user?.role === 1 ? "admin" : "user"
                           }`}
                           className="dropdown-item"
                         >
-                          Dashboard
-                        </NavLink>
+                          DASHBOARD
+                        </Link>
                       </li>
                       <li>
-                        <NavLink
+                        <Link
                           onClick={handleLogout}
                           to="/login"
                           className="dropdown-item"
                         >
-                          Logout
-                        </NavLink>
+                          LOG OUT
+                        </Link>
                       </li>
                     </ul>
                   </li>
                   <li className="nav-item">
-                    <NavLink to="/cart" className="nav-link">
+                    <Link to="/cart" className="nav-link">
                       <Badge
                         count={localStorage.getItem("cartSize")}
                         showZero
                         offset={[10, -5]}
                       >
-                        Cart
+                        🛒
                       </Badge>
-                    </NavLink>
+                    </Link>
                   </li>
                 </>
               )}

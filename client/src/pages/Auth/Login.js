@@ -4,6 +4,7 @@ import { toast } from "react-toastify";
 import axios from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../../context/auth";
+import "./AuthStyles.css";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -50,9 +51,9 @@ const Login = () => {
   };
 
   return (
-    <Layout title="Login">
+    <Layout title="Sign In">
       <div className="form-container">
-        <h1>Login Form</h1>
+        <h1>Sign In</h1>
         <form onSubmit={handleSubmit}>
           <div className="mb-3">
             <input
@@ -61,7 +62,7 @@ const Login = () => {
               onChange={(e) => setEmail(e.target.value)}
               className="form-control"
               id="inputemail"
-              placeholder="Enter Your Email"
+              placeholder="Email"
               required
             />
           </div>
@@ -72,20 +73,18 @@ const Login = () => {
               onChange={(e) => setPassword(e.target.value)}
               className="form-control"
               id="inputpassword"
-              placeholder="Enter Your Password"
+              placeholder="Password"
               required
             />
           </div>
           <div className="mb-3">
-          <button type="submit" className="btn btn-primary">
-            LOGIN
-          </button>
-          </div>          
-        </form>
-        <div className="mb-3">
+            <button type="submit" className="btn btn-primary">
+              Login
+            </button>
+            <br />
             <button
               type="submit"
-              className="btn btn-primary"
+              className="btn btn-primary mt-3"
               onClick={() => {
                 navigate("/forgot-password");
               }}
@@ -93,6 +92,7 @@ const Login = () => {
               Forgot Password
             </button>
           </div>
+        </form>
       </div>
     </Layout>
   );

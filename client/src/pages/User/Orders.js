@@ -26,7 +26,7 @@ const Orders = () => {
     }
   }, [auth?.token]);
   return (
-    <Layout title={"Your Orders"}>
+    <Layout title={"Orders"}>
       <div className="container-flui p-3 m-3 dashboard">
         <div className="row">
           <div className="col-md-3">

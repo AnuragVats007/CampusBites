@@ -187,6 +187,7 @@ const CartPage = () => {
         <div className="container ">
           <div className="row ">
             <div className="col-md-7  p-0 m-0">
+              {console.log(cart)}
               {cart?.map((p) => (
                 <div className="row card flex-row" key={p.product._id}>
                   <div className="col-md-4">

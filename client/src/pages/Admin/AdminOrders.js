@@ -49,7 +49,7 @@ const AdminOrders = () => {
     }
   };
   return (
-    <Layout title={"All Orders Data"}>
+    <Layout title={"All Orders"}>
       <div className="row dashboard">
         <div className="col-md-3">
           <AdminMenu />
@@ -98,17 +98,17 @@ const AdminOrders = () => {
                     <div className="row mb-2 p-3 card flex-row" key={p._id}>
                       <div className="col-md-4">
                         <img
-                          src={`${process.env.REACT_APP_API}/api/product/product-photo/${p._id}`}
+                          src={`${process.env.REACT_APP_API}/api/product/product-photo/${p.product}`}
                           className="card-img-top"
-                          alt={p.name}
+                          alt={p.product}
                           width="100px"
                           height={"100px"}
                         />
                       </div>
                       <div className="col-md-8">
-                        <p>{p.name}</p>
-                        <p>{p.description.substring(0, 30)}</p>
-                        <p>Price : {p.price}</p>
+                        {/* <p>{p.name}</p> */}
+                        {/* <p>{p.description.substring(0, 30)}</p> */}
+                        <p>count : {p.count}</p>
                       </div>
                     </div>
                   ))}
