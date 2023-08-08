@@ -88,3 +88,14 @@
     margin-left: 5vw;
     align-items: center;
   }
+
+  .checkbox {
+    margin-left: 0px !important;
+    border-color: black;
+}
+
+
+/* ==============  PRODUCT IN ADMIN ROUTE   ============ */
+.product-card {
+  text-decoration: none;
+}

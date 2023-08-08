@@ -21,7 +21,6 @@ import Products from "./pages/Admin/Products";
 import UpdateProduct from "./pages/Admin/UpdateProduct";
 import Search from "./pages/Search";
 import ProductDetails from "./pages/ProductDetails";
-import Categories from "./pages/Categories";
 import CategoryProduct from "./pages/CategoryProduct";
 import CartPage from "./pages/CartPage";
 import AdminOrders from "./pages/Admin/AdminOrders";
@@ -32,7 +31,6 @@ function App() {
       <Routes>
         <Route path="/" exact element={<HomePage />} />
         <Route path="/search" element={<Search />} />
-        <Route path="/categories" element={<Categories />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/category/:slug" element={<CategoryProduct />} />
         <Route path="/product/:slug" element={<ProductDetails />} />
