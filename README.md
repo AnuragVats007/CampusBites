@@ -1,1 +1,2 @@
-# Canteen Ecommerce WEbsite
+# Campus Bites
+A hostel canteen management website.
